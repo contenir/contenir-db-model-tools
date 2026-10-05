@@ -60,7 +60,8 @@
     },
     "extra": {
         "laminas": {
-            "config-provider": "Contenir\\Db\\Model\\Tools\\ConfigProvider"
+            "config-provider": "Contenir\\Db\\Model\\Tools\\ConfigProvider",
+            "module": "Contenir\\Db\\Model\\Tools"
         }
     },
     "scripts": {
