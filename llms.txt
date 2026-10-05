@@ -1,0 +1,33 @@
+# contenir-db-model-tools
+
+> Console commands for contenir-db-model 2.x (a PHP 8.3+ data mapper on php-db/phpdb). `entity:generate` writes entity classes from live tables. `entity:upgrade` converts 1.x entities (AbstractEntity with $columns/$primaryKeys/$versionColumn/$relations arrays) to 2.x attributes in place. `mapping:validate` checks mappings against the live schema. Supports MySQL, PostgreSQL and SQLite.
+
+Key facts:
+
+- Install as a dev dependency with the phpdb platform package: `composer require --dev contenir/contenir-db-model-tools php-db/phpdb-mysql` (or phpdb-pgsql / phpdb-sqlite).
+- Standalone: `vendor/bin/db-model <command> --dsn <url>`. DSNs: `mysql://user:pass@host:3306/db`, `pgsql://user:pass@host:5432/db` (`postgres://` also works), `sqlite:///abs/path.db`, `sqlite:rel/path.db`, `sqlite::memory:`. Passwords are redacted from errors.
+- laminas-cli: `vendor/bin/laminas db-model:entity:generate|db-model:entity:upgrade|db-model:mapping:validate`. They use the `contenir_db_model.adapter` service, so `--dsn` is optional. The adapter must implement `PhpDb\Adapter\SchemaAwareInterface` (phpdb's Adapter does). mapping:validate uses the app's `MetadataFactoryInterface` service if there is one.
+- Exit codes: 0 success, 1 failure, 2 invalid arguments.
+- `entity:generate [tables...] [--all] [--namespace App\Entity] [--output src/Entity] [--class Name] [--version-column col] [--no-relations] [--schema s] [--force] [--dry-run]`.
+  - Output: final classes; singular PascalCase class names; camelCase properties with `#[Column('col')]` when the name differs.
+  - Types: int types → int; float/double/real → float; boolean/bit/MySQL tinyint(1) → bool; datetime/timestamp → DateTimeImmutable; date → DateTimeImmutable + `type: 'date'`; json/jsonb → array + `type: 'json'`; decimal/text/other → string.
+  - Nullable columns → `?type = null`. Int/float/bool literal defaults are copied. Generated keys (AUTO_INCREMENT, serial/identity, SQLite INTEGER PRIMARY KEY) → `#[Id(generated: true)] ?int = null`.
+  - Each foreign key → lazy `#[BelongsTo]` (name: FK column minus `_id`, otherwise the singular table) plus `LazyRelationsTrait`. Inverse relations are not generated.
+- `entity:upgrade paths... [--table t] [--camel-case] [--map Repo=Entity] [--dry-run] [--output dir] [--force]`.
+  - Rewrites files IN PLACE (commit first), keeping class name, namespace, methods, constants and formatting. Drops AbstractEntity/BaseEntity, EntityInterface, the four mapping arrays and 1.x imports.
+  - Properties keep COLUMN NAMES by default (`$created_at`) so `$entity->created_at` call sites still work; `--camel-case` renames them.
+  - Types come from the live table. The table is read from the paired 1.x repository's `$table` (Entity/XEntity.php → Repository/XRepository.php), else `--table`.
+  - Relations: via → ManyToMany; single keyed on own primary key → HasOne; single otherwise → BelongsTo; many → HasMany. `order` → orderBy; equality `where` kept, other where dropped and reported.
+  - Relation targets: repository → entity by 1.x convention (…\Repository\XRepository → …\Entity\XEntity), or `--map`.
+  - Reports ("check" lines) methods using $this->data, parent:: calls, populate()/getArrayCopy()/nextVersion() etc., dropped where/order, and non-1.x parent classes.
+- `mapping:validate [classes...] [--path dir]... [--strict]`. Entity classes must be autoloadable; `--path` finds `#[Table]` classes by parsing source.
+  - Errors: invalid mapping, missing table/column, nullable column on a non-nullable property, #[Id] ≠ primary key, generated #[Id] on a non-generated column, #[Version] on a non-integer column, missing join table/columns.
+  - Warnings: type mismatch, nullable property on a NOT NULL column without a default, generated column without `generated: true`, unmapped NOT NULL column without a default, table without a primary key.
+  - Exit 1 on errors, or on warnings with --strict.
+
+## Docs
+
+- [Setup and connections](docs/setup.md)
+- [Generating entities](docs/generate.md)
+- [Upgrading 1.x entities](docs/upgrade.md)
+- [Validating mappings](docs/validate.md)
