@@ -27,6 +27,7 @@ final class CommandInputTest extends TestCase
             new InputArgument('tables', InputArgument::IS_ARRAY),
             new InputOption('name', null, InputOption::VALUE_REQUIRED),
             new InputOption('force', null, InputOption::VALUE_NONE),
+            new InputOption('path', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY),
         ])));
     }
 
@@ -46,6 +47,12 @@ final class CommandInputTest extends TestCase
             $input->option('name'),
             $input->flag('force'),
         ]);
+    }
+
+    #[Test]
+    public function readsArrayOptions(): void
+    {
+        static::assertSame(['src', 'lib'], self::input(['--path' => ['src', '', 'lib']])->options('path'));
     }
 
     #[Test]

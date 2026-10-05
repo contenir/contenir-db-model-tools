@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Contenir\Db\Model\Tools\Console;
 
 use Contenir\Db\Model\Tools\Command\GenerateEntityCommand;
+use Contenir\Db\Model\Tools\Command\ValidateMappingCommand;
 use Symfony\Component\Console\Application as ConsoleApplication;
 
 /**
@@ -20,6 +21,7 @@ final class Application extends ConsoleApplication
 
         $this->addCommands([
             new GenerateEntityCommand(),
+            new ValidateMappingCommand(),
         ]);
     }
 }

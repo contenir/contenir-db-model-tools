@@ -16,6 +16,16 @@ use function sprintf;
  */
 final class ToolException extends RuntimeException implements ExceptionInterface
 {
+    public static function cannotParse(string $file, string $reason): self
+    {
+        return new self(sprintf('Cannot parse %s: %s', $file, $reason));
+    }
+
+    public static function cannotRead(string $path, string $reason): self
+    {
+        return new self(sprintf('Cannot read %s: %s', $path, $reason));
+    }
+
     public static function cannotWrite(string $path, string $reason): self
     {
         return new self(sprintf('Cannot write %s: %s', $path, $reason));

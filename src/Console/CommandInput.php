@@ -26,10 +26,9 @@ final readonly class CommandInput
      *
      * @mago-expect analysis:mixed-assignment Console input is untyped; validated here.
      */
-    public function arguments(string $name): array
+    private static function strings(mixed $value): array
     {
-        $value = $this->input->getArgument($name);
-        $list  = [];
+        $list = [];
         foreach (is_array($value) ? array_values($value) : [$value] as $item) {
             if (! is_string($item) || '' === $item) {
                 continue;
@@ -39,6 +38,16 @@ final readonly class CommandInput
         }
 
         return $list;
+    }
+
+    /**
+     * Values of an array argument, with empty values dropped.
+     *
+     * @return list<string>
+     */
+    public function arguments(string $name): array
+    {
+        return self::strings($this->input->getArgument($name));
     }
 
     public function flag(string $name): bool
@@ -54,5 +63,15 @@ final readonly class CommandInput
         $value = $this->input->getOption($name);
 
         return is_string($value) && '' !== $value ? $value : null;
+    }
+
+    /**
+     * Values of an array option, with empty values dropped.
+     *
+     * @return list<string>
+     */
+    public function options(string $name): array
+    {
+        return self::strings($this->input->getOption($name));
     }
 }

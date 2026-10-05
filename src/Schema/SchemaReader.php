@@ -15,6 +15,7 @@ use function in_array;
 use function preg_replace;
 use function strtolower;
 use function trim;
+use function usort;
 
 /**
  * Reads table structure from a live database through phpdb's metadata,
@@ -54,7 +55,13 @@ final readonly class SchemaReader
         $extras      = $this->extras->for($table, $schema);
 
         $columns = [];
-        foreach ($this->metadata->getColumns($table, $schema) as $column) {
+        $ordered = array_values($this->metadata->getColumns($table, $schema));
+        usort(
+            $ordered,
+            static fn(ColumnObject $a, ColumnObject $b): int => (int) $a->getOrdinalPosition()
+            <=> (int) $b->getOrdinalPosition(),
+        );
+        foreach ($ordered as $column) {
             $columns[] = $this->column($column, $primaryKey, $extras[$column->getName()] ?? null);
         }
 

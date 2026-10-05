@@ -77,7 +77,7 @@ final class SchemaReaderTest extends TestCase
         $names = (new SchemaReader($this->adapter))->tableNames();
         sort($names);
 
-        static::assertSame(['audit_log', 'order_items', 'user_tag', 'users'], $names);
+        static::assertSame(['audit_log', 'order_items', 'tags', 'user_tag', 'users'], $names);
     }
 
     #[Test]
