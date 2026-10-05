@@ -12,6 +12,7 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Literal;
 use Nette\PhpGenerator\PhpNamespace;
 
+use function array_key_exists;
 use function sprintf;
 
 /**
@@ -47,7 +48,7 @@ final readonly class LegacyRelationRenderer
             }
 
             $property->setType($relation->target->entity)->setNullable();
-            if (! $class->hasTrait(LazyRelationsTrait::class)) {
+            if (! array_key_exists(LazyRelationsTrait::class, $class->getTraits())) {
                 $namespace->addUse(LazyRelationsTrait::class);
                 $class->addTrait(LazyRelationsTrait::class);
             }
