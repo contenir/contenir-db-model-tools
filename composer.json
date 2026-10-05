@@ -1,0 +1,86 @@
+{
+    "name": "contenir/contenir-db-model-tools",
+    "description": "Command-line tools for contenir-db-model: generate entities from live tables, upgrade 1.x entities and validate mappings",
+    "license": "BSD-3-Clause",
+    "type": "library",
+    "keywords": [
+        "contenir",
+        "php-db",
+        "data-mapper",
+        "code-generation",
+        "cli"
+    ],
+    "homepage": "https://contenir.com.au",
+    "support": {
+        "issues": "https://github.com/contenir/contenir-db-model-tools/issues",
+        "source": "https://github.com/contenir/contenir-db-model-tools"
+    },
+    "require": {
+        "php": "~8.3.0 || ~8.4.0 || ~8.5.0",
+        "contenir/contenir-db-model": "^2.0@RC",
+        "nette/php-generator": "^4.1",
+        "nikic/php-parser": "^5.0",
+        "psr/container": "^1.1 || ^2.0",
+        "symfony/console": "^7.0"
+    },
+    "require-dev": {
+        "mikey179/vfsstream": "^1.6.12",
+        "php-db/phpdb-mysql": "^0.4.0",
+        "php-db/phpdb-pgsql": "0.1.x-dev",
+        "php-db/phpdb-qa-tools": "0.1.x-dev",
+        "php-db/phpdb-sqlite": "^0.2.0",
+        "phpunit/phpunit": "^11.5.42"
+    },
+    "suggest": {
+        "laminas/laminas-cli": "Run the commands through an application's container and configured adapter",
+        "php-db/phpdb-mysql": "Read MySQL schemas",
+        "php-db/phpdb-pgsql": "Read PostgreSQL schemas",
+        "php-db/phpdb-sqlite": "Read SQLite schemas"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Contenir\\Db\\Model\\Tools\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ContenirTest\\Db\\Model\\Tools\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/db-model"
+    ],
+    "config": {
+        "platform": {
+            "php": "8.3.99"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "Contenir\\Db\\Model\\Tools\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@static-analysis",
+            "@test",
+            "@test-integration"
+        ],
+        "cs-check": [
+            "mago format --check",
+            "mago lint"
+        ],
+        "cs-fix": [
+            "mago format",
+            "mago lint --fix"
+        ],
+        "static-analysis": "mago analyze",
+        "test": "phpunit --colors=always --testsuite unit",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "test-integration": "phpunit --colors=always --testsuite integration"
+    }
+}
