@@ -23,8 +23,12 @@ use function class_exists;
  */
 final readonly class ColumnRenderer
 {
+    /**
+     * @param bool $columnNames name properties after their columns instead of camel-casing them
+     */
     public function __construct(
         private ?string $versionColumn,
+        private bool $columnNames = false,
     ) {}
 
     /**
@@ -48,7 +52,9 @@ final readonly class ColumnRenderer
      */
     public function render(PhpNamespace $namespace, ClassType $class, TableSchema $table, ColumnSchema $column): string
     {
-        $name     = Inflector::property($column->name);
+        $name = $this->columnNames && Inflector::isIdentifier($column->name)
+            ? $column->name
+            : Inflector::property($column->name);
         $type     = TypeMapper::map($column);
         $nullable = $column->nullable || $column->generated;
         $property = $class->addProperty($name)->setType($type->phpType)->setNullable($nullable);

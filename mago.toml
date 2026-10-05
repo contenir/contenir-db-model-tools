@@ -4,6 +4,8 @@ php-version = "8.3.0"
 [source]
 paths = ["src", "tests"]
 includes = ["vendor"]
+# 1.x entities, parsed by the entity:upgrade tests but never loaded.
+excludes = ["tests/Fixture"]
 
 [formatter]
 # Keep `(new Foo())->bar()`: CI formats under each job's PHP version, and the

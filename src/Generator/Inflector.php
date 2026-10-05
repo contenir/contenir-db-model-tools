@@ -9,6 +9,7 @@ use function count;
 use function explode;
 use function implode;
 use function lcfirst;
+use function preg_match;
 use function preg_replace;
 use function str_ends_with;
 use function strlen;
@@ -39,6 +40,14 @@ final readonly class Inflector
     public static function className(string $table): string
     {
         return ucfirst(self::camel(self::singular($table)));
+    }
+
+    /**
+     * Whether a name can be used as a PHP property name as it is.
+     */
+    public static function isIdentifier(string $name): bool
+    {
+        return 1 === preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name);
     }
 
     /**

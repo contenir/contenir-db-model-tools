@@ -46,6 +46,17 @@ final class InflectorTest extends TestCase
     }
 
     #[Test]
+    public function recognisesNamesUsableAsProperties(): void
+    {
+        static::assertSame([true, true, false, false], [
+            Inflector::isIdentifier('created_at'),
+            Inflector::isIdentifier('_x1'),
+            Inflector::isIdentifier('first-name'),
+            Inflector::isIdentifier('1st'),
+        ]);
+    }
+
+    #[Test]
     public function relationIsNamedAfterForeignKeyOrReferencedTable(): void
     {
         static::assertSame(['author', 'category', 'category'], [
