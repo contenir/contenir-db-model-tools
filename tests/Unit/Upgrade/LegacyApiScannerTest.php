@@ -27,7 +27,7 @@ final class LegacyApiScannerTest extends TestCase
             public function nextVersion($v) { return $v + 1; }
             public function name(): string { return $this->name . $other->data . $this->format(); }
             abstract public function declared(): void;
-            public function dynamic(): mixed { return $this->{$field} ?? self::make(); }
+            public function dynamic(): mixed { return $this->{$field} ?? $class::make() ?? $this->{$field}(); }
         }
         PHP;
 

@@ -33,7 +33,7 @@ final readonly class LegacyOrder
         $orderBy = [];
         foreach (is_array($order) ? $order : [$order] as $key => $value) {
             [$column, $direction] = self::entry($key, $value);
-            if ('ASC' === $direction || 'DESC' === $direction) {
+            if ('' !== $column && ('ASC' === $direction || 'DESC' === $direction)) {
                 $orderBy[$column] = $direction;
 
                 continue;

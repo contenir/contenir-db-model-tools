@@ -74,6 +74,27 @@ final class EntityGeneratorTest extends TestCase
     }
 
     #[Test]
+    public function compositeForeignKeysListTheirColumns(): void
+    {
+        $table = new TableSchema(
+            'memberships',
+            null,
+            [
+                new ColumnSchema('id', 'int', false),
+                new ColumnSchema('group_id', 'int', false),
+                new ColumnSchema('site', 'varchar', false),
+            ],
+            ['id'],
+            [new ForeignKeySchema(['group_id', 'site'], 'groups', ['id', 'site'])],
+        );
+
+        static::assertStringContainsString(
+            "#[BelongsTo(Group::class, foreignKey: ['group_id', 'site'], ownerKey: ['id', 'site'])]",
+            (new EntityGenerator())->generate($table)->source,
+        );
+    }
+
+    #[Test]
     public function compositeKeysGetAnIdPerColumn(): void
     {
         $table = new TableSchema(

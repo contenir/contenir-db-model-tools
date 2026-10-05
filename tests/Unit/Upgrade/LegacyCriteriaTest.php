@@ -30,6 +30,7 @@ final class LegacyCriteriaTest extends TestCase
             'single string'         => ['name   desc', ['name' => 'DESC'], 0],
             'column => direction'   => [['name' => 'desc'], ['name' => 'DESC'], 0],
             'bad direction'         => [['name sideways', 'id' => 'up', 'x' => 1], [], 3],
+            'not a string'          => [[5], [], 1],
             'none'                  => [[], [], 0],
         ];
     }
@@ -76,6 +77,18 @@ final class LegacyCriteriaTest extends TestCase
                 ],
             ],
             [$criteria->where, $notes],
+        );
+    }
+
+    #[Test]
+    public function readsASingleWhereCondition(): void
+    {
+        $notes = [];
+        LegacyCriteria::read('items', ['where' => 'qty > 0'], $notes);
+
+        static::assertSame(
+            ['relation $items: where condition "qty > 0" was dropped; 2.x supports column => value equality only'],
+            $notes,
         );
     }
 }

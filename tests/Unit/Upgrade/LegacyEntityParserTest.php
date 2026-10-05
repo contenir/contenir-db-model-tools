@@ -69,6 +69,7 @@ final class LegacyEntityParserTest extends TestCase
             'global constant' => ['[COLUMNS]', 'only literals, ::class and RELATION_* constants are supported'],
             'other constant'  => ['[self::OTHER]', 'unsupported constant OTHER'],
             'dynamic class'   => ['[$x::class]', 'dynamic class names are not supported'],
+            'dynamic name'    => ["[self::{'X'}]", 'only literals, ::class and RELATION_* constants are supported'],
         ];
     }
 

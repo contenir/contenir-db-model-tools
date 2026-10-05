@@ -56,6 +56,16 @@ final class CommandInputTest extends TestCase
     }
 
     #[Test]
+    public function readsASingleValueArgumentAsAList(): void
+    {
+        $input = new CommandInput(new ArrayInput(['name' => 'users'], new InputDefinition([
+            new InputArgument('name'),
+        ])));
+
+        static::assertSame(['users'], $input->arguments('name'));
+    }
+
+    #[Test]
     public function readsGivenValues(): void
     {
         $input = self::input(['tables' => ['users', 'orders'], '--name' => 'x', '--force' => true]);
