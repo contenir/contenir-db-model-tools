@@ -53,7 +53,8 @@ final readonly class AstGrafter
                 str_starts_with($name, self::LEGACY_NAMESPACE)
                 || in_array($name, $repositories, strict: true)
             ),
-        ))->print();
+        ))
+            ->print();
     }
 
     /**
