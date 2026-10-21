@@ -46,14 +46,16 @@ final readonly class AstGrafter
         $class->implements = self::withoutLegacy($class->implements);
         $notes             = [...$notes, ...self::unextend($class)];
 
-        return $source->withStatements(ImportMerger::merge(
-            $source->modified,
-            (new NodeFinder())->findInstanceOf($generated, Use_::class),
-            static fn(string $name): bool => (
-                str_starts_with($name, self::LEGACY_NAMESPACE)
-                || in_array($name, $repositories, strict: true)
-            ),
-        ))->print();
+        return $source
+            ->withStatements(ImportMerger::merge(
+                $source->modified,
+                (new NodeFinder())->findInstanceOf($generated, Use_::class),
+                static fn(string $name): bool => (
+                    str_starts_with($name, self::LEGACY_NAMESPACE)
+                    || in_array($name, $repositories, strict: true)
+                ),
+            ))
+            ->print();
     }
 
     /**
